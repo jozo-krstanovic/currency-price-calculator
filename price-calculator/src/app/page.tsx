@@ -52,42 +52,42 @@ export default function Home() {
   );
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-6">
+    <div className="max-w-3xl mx-auto p-4 sm:p-6 space-y-6">
       <h1 className="text-3xl font-bold text-center">Kalkulator valuta i PDV-a</h1>
 
       {/* Exchange rate input */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
         <div className="flex flex-col">
-          <label className="mb-1">Cijena u EUR</label>
+          <label className="mb-1 font-medium">Cijena u EUR</label>
           <input
             type="number"
             placeholder="Unesite cijenu u EUR"
             value={priceEUR}
             onChange={(e) => setPriceEUR(Number(e.target.value))}
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-blue-400"
           />
         </div>
         <div className="flex flex-col">
-          <label className="mb-1">Cijena u USD</label>
+          <label className="mb-1 font-medium">Cijena u USD</label>
           <input
             type="number"
             placeholder="Unesite cijenu u USD"
             value={priceUSD}
             onChange={(e) => setPriceUSD(Number(e.target.value))}
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-blue-400"
           />
         </div>
         <button
           onClick={calculateExchangeRate}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
         >
           Izračunaj tečaj
         </button>
       </div>
 
       {exchangeRate && (
-        <div className="text-lg">
-          <strong>Tečaj:</strong> {exchangeRate.toFixed(4)}
+        <div className="text-lg font-semibold">
+          Tečaj: <span className="text-blue-700">{exchangeRate.toFixed(4)}</span>
         </div>
       )}
 
@@ -97,8 +97,9 @@ export default function Home() {
           type="checkbox"
           checked={includeVAT}
           onChange={(e) => setIncludeVAT(e.target.checked)}
+          className="w-5 h-5"
         />
-        <label>Uključi PDV (10%)</label>
+        <label className="font-medium">Uključi PDV (10%)</label>
       </div>
 
       {/* Add new article */}
@@ -106,28 +107,28 @@ export default function Home() {
         <h2 className="text-xl font-semibold">Dodaj novi artikal</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 items-end">
           <div className="flex flex-col">
-            <label className="mb-1">Cijena u USD</label>
+            <label className="mb-1 font-medium">Cijena u USD</label>
             <input
               type="number"
               placeholder="Unesite cijenu u USD"
               value={newPriceUSD}
               onChange={(e) => setNewPriceUSD(Number(e.target.value))}
-              className="border p-2 rounded"
+              className="border p-2 rounded focus:ring-2 focus:ring-green-400"
             />
           </div>
           <div className="flex flex-col">
-            <label className="mb-1">Količina</label>
+            <label className="mb-1 font-medium">Količina</label>
             <input
               type="number"
               placeholder="Unesite količinu"
               value={newAmount}
               onChange={(e) => setNewAmount(Number(e.target.value))}
-              className="border p-2 rounded"
+              className="border p-2 rounded focus:ring-2 focus:ring-green-400"
             />
           </div>
           <button
             onClick={addArticle}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full sm:w-auto"
           >
             Dodaj
           </button>
@@ -137,19 +138,22 @@ export default function Home() {
       {/* Article table */}
       {articles.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-300 mt-4">
+          <table className="w-full border-collapse border border-gray-300 mt-4 text-center">
             <thead>
-              <tr className="bg-gray-200 text-center">
+              <tr className="bg-gray-200 font-semibold">
                 <th className="border p-2">Cijena USD</th>
                 <th className="border p-2">Količina</th>
                 <th className="border p-2">Cijena EUR</th>
-                <th className="border p-2">EUR × Količina</th>
+                <th className="border p-2">Ukupna cijena</th>
                 <th className="border p-2">Akcije</th>
               </tr>
             </thead>
             <tbody>
-              {articles.map((a) => (
-                <tr key={a.id} className="text-center">
+              {articles.map((a, index) => (
+                <tr
+                  key={a.id}
+                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
                   <td className="border p-2">{a.priceUSD.toFixed(2)}</td>
                   <td className="border p-2">{a.amount}</td>
                   <td className="border p-2">{a.priceEUR.toFixed(2)}</td>
@@ -167,14 +171,18 @@ export default function Home() {
                 </tr>
               ))}
             </tbody>
+            <tfoot>
+              <tr className="bg-yellow-100 font-bold">
+                <td className="border p-2 text-right" colSpan={3}>
+                  Ukupno EUR:
+                </td>
+                <td className="border p-2">{totalEUR.toFixed(2)}</td>
+                <td className="border p-2"></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       )}
-
-      {/* Total */}
-      <div className="text-xl font-bold text-right mt-2">
-        Ukupno EUR: {totalEUR.toFixed(2)}
-      </div>
     </div>
   );
 }
